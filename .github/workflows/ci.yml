@@ -1,0 +1,87 @@
+name: CI Pipeline with Security Scanning
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 1. Run Unit Tests & Keep the Artifacts Natively accessible
+      - name: Install dependencies & Run Tests locally for reports
+        run: |
+          npm ci
+          npm test -- --coverage --coverage.reporter=lcov --reporter=default --reporter=junit --outputFile=test-report.xml
+
+      - name: Upload Test Report Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vitest-junit-report
+          path: test-report.xml
+
+      # 2. Run Quality Audit and Snyk Scans via the multi-stage targets
+      - name: Run npm audit
+        run: docker build --target npm-audit .
+
+      - name: Snyk scan
+        if: ${{ secrets.SNYK_TOKEN != '' }}
+        run: docker build --target snyk-scan --build-arg SNYK_TOKEN=${{ secrets.SNYK_TOKEN }} .
+
+      # 3. Build & Push using Docker Actions to generate a proper Digest output
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.5.0
+
+      - name: Extract Metadata (Tags, Labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: akashkoche/github-portfolio
+          tags: |
+            type=raw,value=latest
+
+      - name: Build and Push Production Image
+        id: build-and-push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: builder
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VITE_GITHUB_TOKEN=${{ secrets.VITE_GITHUB_TOKEN }}
+
+      # 4. Run Vulnerability Scanning on the freshly pushed image
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'akashkoche/github-portfolio:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      # 5. Cryptographically Sign using the Unique Digest Output from Build Action
+      - name: Sign container image
+        run: |
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY akashkoche/github-portfolio@${{ steps.build-and-push.outputs.digest }}
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}

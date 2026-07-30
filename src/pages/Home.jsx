@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Hero from '../components/hero/Hero';
+import { ArrowRight } from 'lucide-react';
 
 export default function Home() {
   const [username, setUsername] = useState('');
@@ -8,40 +10,40 @@ export default function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username.trim()) {
-      navigate(`/dashboard/${username.trim()}`);
-    }
+    if (username.trim()) navigate(`/dashboard/${username.trim()}`);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 transition-colors">
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl text-center"
-      >
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          GitFolio
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">
-          Enter a GitHub username to explore their portfolio
-        </p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="e.g. torvalds"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
-          />
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition"
-          >
-            View Portfolio
-          </button>
-        </form>
-      </motion.div>
+    <div className="relative min-h-screen">
+      {/* Hero already has aurora background */}
+      <Hero />
+      <div id="dashboard" className="flex items-center justify-center pb-32 px-4">
+        <motion.form
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="glass-card p-8 w-full max-w-md text-center"
+        >
+          <h2 className="text-2xl font-bold text-white mb-2">Explore a GitHub Profile</h2>
+          <p className="text-slate-400 mb-6">Enter any username to see their portfolio.</p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="e.g. torvalds"
+              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-purple-600 to-cyan-400 text-white px-4 py-3 rounded-xl hover:scale-105 transition flex items-center gap-1"
+            >
+              Go <ArrowRight size={16} />
+            </button>
+          </div>
+        </motion.form>
+      </div>
     </div>
   );
 }

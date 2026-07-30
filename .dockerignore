@@ -1,0 +1,36 @@
+# Ignore git files
+.git
+.gitignore
+
+# Ignore local dependencies
+node_modules/
+venv/
+.venv/
+
+# Ignore local build outputs and tests
+dist/
+coverage/
+
+# Ignore secrets and keys
+cosign.key
+cosign.pub
+*.key
+*.pub
+
+# Ignore local Kubernetes/Docker configs & scripts
+k3d-cluster.sh
+k8s/
+docker-compose.yml
+Dockerfile
+
+# Ignore quality/security reports
+sonar-project.properties
+sonar-report.json
+test-report.xml
+report/
+zap-reports/
+
+# Ignore documentation and metadata
+README.md
+.DS_Store
+.vscode/

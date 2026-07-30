@@ -1,0 +1,11 @@
+{
+  "remoteName": "origin",
+  "projects": [
+    {
+      "id": "prj_o6bontsm9y0iHj9QCUBjHoXvTdDN",
+      "name": "github-portfolio",
+      "directory": ".",
+      "orgId": "team_GXOg3mblciLBnEKQDjKto5LJ"
+    }
+  ]
+}
