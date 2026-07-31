@@ -11,7 +11,7 @@ on:
         required: true
         type: string
     secrets:
-      github_token:
+      git_token:
         required: true
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.github_token }}
+          token: ${{ secrets.git_token }}
 
       - name: Update Helm Image Tag
         run: |
