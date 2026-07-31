@@ -1,0 +1,4 @@
+# .trivyignore
+# Snyk CLI internal Go binary dependencies (dev-only)
+CVE-2025-46569
+CVE-2026-56852

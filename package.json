@@ -54,8 +54,5 @@
     "cross-spawn": "^7.0.5",
     "glob": "^10.5.0",
     "minimatch": "^9.0.7"
-  },
-  "allowScripts": {
-    "snyk@1.1306.2": true
   }
 }
