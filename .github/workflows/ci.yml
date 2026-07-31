@@ -35,20 +35,19 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Snyk Scan
-        if: ${{ secrets.SNYK_TOKEN != '' }}
+        if: ${{ env.SNYK_TOKEN != '' }}
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   build-and-push:
     needs: test-and-audit
-    if: github.event_name == 'push' && github.ref == 'ref/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reusable-docker-build.yml
     with:
       image_name: "akashkoche/github-portfolio"
       tags: "latest,${{ github.sha }}"
       target_stage: "builder"
-      build_args: |
-        VITE_GITHUB_TOKEN=${{ secrets.VITE_GITHUB_TOKEN }}
     secrets:
       registry_username: ${{ secrets.DOCKERHUB_USERNAME }}
       registry_password: ${{ secrets.DOCKERHUB_PASSWORD }}
