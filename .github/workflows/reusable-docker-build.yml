@@ -78,7 +78,7 @@ jobs:
           build-args: ${{ inputs.build_args }}
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.29.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ inputs.image_name }}:${{ inputs.tags }}
           format: 'table'
