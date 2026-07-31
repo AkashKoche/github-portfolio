@@ -1,0 +1,33 @@
+name: Local GitOps CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types: [completed]
+    branched: [main]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        run: |
+          helm upgrade --install github-portfolio ./helm/github-portfolio \
+      --namespace github-portfolio \
+      --create-namespace \
+      --set image.tag=${{ github.sha }}
+
+      - name: Verify Deployment
+        run: |
+          kubectl rollout status deployment/github-portfolio -n github-portfolio --timeout=60s
+#  update-gitops:
+#    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+#    uses: ./.github/workflows/reusable-gitops-update.yml
+#    with:
+#      helm_values_path: "helm/github-portfolio/values.yaml"
+#      image_tag: ${{ github.sha }}
+#    secrets:
+#      github_token: ${{ secrets.GITHUB_TOKEN }}

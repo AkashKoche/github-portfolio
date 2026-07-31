@@ -16,7 +16,7 @@ spec:
         app: github-portfolio
     spec:
       containers:
-      - name: app
+      - name: github-portfolio
         image: akashkoche/github-portfolio:1.0.1
         imagePullPolicy: IfNotPresent
         ports:

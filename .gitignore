@@ -1,29 +1,88 @@
-# --- Security & Crypto Keys ---
-cosign.key
+# ==========================================
+# Secrets & Private Keys (CRITICAL)
+# ==========================================
 *.key
 *.pem
+cosign.key
+# Keep cosign.pub if you want the public key in git for cluster deployment reference,
+# otherwise untrack it by uncommenting:
+# cosign.pub
 
-# --- Dependencies & Environments ---
-node_modules/
-venv/
+# Environment Files
 .env
-.env.*
-!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# --- Build Outputs ---
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+.pnp
+.pnp.js
+
+# ==========================================
+# Build & Output Artifacts
+# ==========================================
 dist/
-out/
+dist-ssr/
+build/
+*.bsp
 
-# --- Test & Quality Scans (Sonar / Vitest / ZAP) ---
+# ==========================================
+# Testing, Coverage & Scanner Artifacts
+# ==========================================
 coverage/
 report/
-zap-reports/
-.scannerwork/
-sonar-report.json
 test-report.xml
-*.log
+sonar-report.json
+.scannerwork/
+.vitest/
 
-# --- IDE & System Files ---
+# Security Scans (OWASP ZAP)
+zap-reports/
+*.html
+
+# ==========================================
+# Logs & Process Outputs
+# ==========================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# IDEs & System Files
+# ==========================================
 .DS_Store
-.vscode/
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories
 .idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==========================================
+# Temporary Files & Local Overrides
+# ==========================================
+*.tmp
+*.bak
+.vercel/
+.k3d/
+github-action-runner.sh

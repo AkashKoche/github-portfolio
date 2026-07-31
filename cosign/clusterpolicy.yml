@@ -1,0 +1,29 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-image-cosign-signature
+  annotations:
+    policies.kyverno.io/title: Verify Cosign Signature
+    policies.kyverno.io/subject: Pod
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+    - name: verify-signature
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      verifyImages:
+        - imageReferences:
+            - "index.docker.io/akashkoche/github-portfolio:*"
+            - "docker.io/akashkoche/github-portfolio:*"
+          attestors:
+            - count: 1
+              entries:
+                - keys:
+                    publicKeys: |
+                      ----- BEGIN PUBLIC KEY ------
+                      XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                      ------ END PUBLIC KEY -------

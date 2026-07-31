@@ -1,0 +1,36 @@
+name: Reusable GitOps Update
+
+on:
+  workflow_call:
+    inputs:
+      helm_values_path:
+        required: false
+        type: string
+        default: "helm/github-portfolio/values.yaml"
+      image_tag:
+        required: true
+        type: string
+      secrets:
+        github_token:
+          required: true
+
+jobs:
+  update-manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.github_token }}
+
+      - name: Update Helm Image Tag
+        run: |
+          sed -i "s/tag: .*/tag: ${{ inputs.image_tag }}/" ${{ inputs.helm_values_path }}
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/github-commit-action@v5
+        with:
+          commit_message: "chore(gitops): update image tag to ${{ inputs.image_tag }} [skip ci]"
+          file_pattern: "${{ inputs.helm_values_path }}"
+          commit_user_name: "GitHub Actions Bot"
+          commit_user_email: "actions@github.com"
