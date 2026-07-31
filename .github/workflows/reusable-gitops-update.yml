@@ -10,9 +10,9 @@ on:
       image_tag:
         required: true
         type: string
-      secrets:
-        github_token:
-          required: true
+    secrets:
+      github_token:
+        required: true
 
 jobs:
   update-manifests:
