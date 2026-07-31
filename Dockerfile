@@ -1,8 +1,10 @@
-# syntax=docker/dockerfile:1
-
 #---- Base Stage ----
 FROM node:22-alpine AS base
 WORKDIR /app
+
+
+RUN apk update && apk upgrade --no-cache
+
 COPY package*.json ./
 RUN npm ci
 
@@ -11,7 +13,7 @@ FROM base AS test
 COPY . .
 RUN npm test
 
-#---- Security Audit ----
+#---- Security Audit Stage ----
 FROM base AS npm-audit
 COPY . .
 RUN npm audit --audit-level=critical
@@ -20,7 +22,10 @@ RUN npm audit --audit-level=critical
 FROM base AS snyk-scan
 COPY . .
 ARG SNYK_TOKEN
-RUN npm install -g snyk --foreground-scripts
+
+
+RUN npm install -g snyk@latest --foreground-scripts
+
 RUN if [ -n "$SNYK_TOKEN" ]; then \
       snyk auth "$SNYK_TOKEN" && snyk test --all-projects || true; \
     else \
@@ -36,10 +41,11 @@ RUN npm run build
 
 #---- Production Image ----
 FROM nginx:alpine
-# Upgrade Alpine packages to patch CVE-2026-34182 (OpenSSL vulnerability)
-RUN apk update && apk upgrade --no-cache openssl
+
+RUN apk update && apk upgrade --no-cache
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
