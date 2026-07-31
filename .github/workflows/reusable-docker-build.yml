@@ -64,7 +64,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ inputs.image_name }}
-          tags: ${{ inputs.tags }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main '}}
+            type=sha,prefix=,format=short
+            type=semver,pattern={{version}}
 
       - name: Build and Push
         id: build-and-push
@@ -81,7 +84,7 @@ jobs:
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: image
-          image-ref: ${{ inputs.image_name }}:${{ inputs.tags }}
+          image-ref: ${{ inputs.image_name }}@${{ steps.build-and-push.outputs.digest }}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -89,13 +92,11 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Install Cosign
-        if: ${{ env.COSIGN_PRIVATE_KEY != '' }}
-        env:
-          COSIGN_PRIVATE_KEY: ${{ secrets.cosign_private_key }}
+        if: ${{ secrets.cosign_private_key != '' }}
         uses: sigstore/cosign-installer@v3.5.0
 
       - name: Sign Container Image
-        if: ${{ env.COSIGN_PRIVATE_KEY != '' }}
+        if: ${{ secrets.cosign_private_key != '' }}
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.cosign_private_key }}
           COSIGN_PASSWORD: ${{ secrets.cosign_password }}

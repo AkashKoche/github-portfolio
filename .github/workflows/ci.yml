@@ -46,7 +46,6 @@ jobs:
     uses: ./.github/workflows/reusable-docker-build.yml
     with:
       image_name: "akashkoche/github-portfolio"
-      tags: "latest:${{ github.sha }}"
       target_stage: "builder"
     secrets:
       registry_username: ${{ secrets.DOCKERHUB_USERNAME }}
