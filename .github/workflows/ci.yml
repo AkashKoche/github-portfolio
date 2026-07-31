@@ -50,6 +50,6 @@ jobs:
       target_stage: "builder"
     secrets:
       registry_username: ${{ secrets.DOCKERHUB_USERNAME }}
-      registry_password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      registry_password: ${{ secrets.DOCKERHUB_TOKEN }}
       cosign_private_key: ${{ secrets.COSIGN_PRIVATE }}
       cosign_password: ${{ secrets.COSIGN_PASSWORD }}
