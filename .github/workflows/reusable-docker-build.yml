@@ -92,11 +92,13 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Install Cosign
-        if: ${{ secrets.cosign_private_key != '' }}
+        if: ${{ env.COSIGN_PRIVATE_KEY != '' }}
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.cosign_private_key }}
         uses: sigstore/cosign-installer@v3.5.0
 
       - name: Sign Container Image
-        if: ${{ secrets.cosign_private_key != '' }}
+        if: ${{ env.COSIGN_PRIVATE_KEY != '' }}
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.cosign_private_key }}
           COSIGN_PASSWORD: ${{ secrets.cosign_password }}
