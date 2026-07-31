@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 #---- Base Stage ----
-FROM node:20-alpine AS base
+FROM node:20-alpine3.23 AS base
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
@@ -29,6 +29,7 @@ RUN if [ -n "$SNYK_TOKEN" ]; then \
 
 #---- Build Stage ----
 FROM base AS builder
+RUN apk update && upgrade --no-cache
 COPY . .
 ARG VITE_GITHUB_TOKEN
 ENV VITE_GITHUB_TOKEN=$VITE_GITHUB_TOKEN
