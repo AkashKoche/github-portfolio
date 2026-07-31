@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 #---- Base Stage ----
-FROM node:20-alpine3.23 AS base
+FROM node:22-alpine AS base
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
