@@ -17,6 +17,8 @@ on:
 jobs:
   update-manifests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,7 +30,7 @@ jobs:
           sed -i "s/tag: .*/tag: ${{ inputs.image_tag }}/" ${{ inputs.helm_values_path }}
 
       - name: Commit and Push Changes
-        uses: stefanzweifel/github-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore(gitops): update image tag to ${{ inputs.image_tag }} [skip ci]"
           file_pattern: "${{ inputs.helm_values_path }}"
