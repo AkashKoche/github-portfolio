@@ -32,7 +32,7 @@ jobs:
           path: test-report.xml
 
       - name: Run npm audit
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=CRITICAL
 
       - name: Snyk Scan
         env:

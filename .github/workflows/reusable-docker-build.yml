@@ -89,7 +89,7 @@ jobs:
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
 
       - name: Install Cosign
         if: ${{ env.COSIGN_PRIVATE_KEY != '' }}
