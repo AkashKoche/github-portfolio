@@ -1,25 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ include "github-portfolio.fullname" . }}
   labels:
-    app: {{ .Release.Name }}
+    {{- include "github-portfolio.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      {{- include "github-portfolio.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        {{- include "github-portfolio.selectorLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "github-portfolio.fullname" . }}
       containers:
         - name: {{ include "github-portfolio.fullname" . }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: {{ include "github-portfolio.fullname" . }}-config
           env:
             - name: VITE_GITHUB_TOKEN
               valueFrom:

@@ -1,0 +1,65 @@
+# ==========================================
+# Helm Packaging Ignore File
+# Path: helm/github-portfolio/.helmignore
+# ==========================================
+
+# Version control system files
+.git/
+.gitignore
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Helm dependency locks & temporary packaging build files
+*.tgz
+*.lock
+
+# Editor & IDE settings
+.vscode/
+.idea/
+
+# Source code & frontend development files
+src/
+public/
+dist/
+node_modules/
+package.json
+package-lock.json
+vite.config.js
+eslint.config.js
+index.html
+
+# Environment variables & local configuration
+.env
+.env.*
+
+# Secrets, Keys, and Security Tokens
+*.key
+*.pub
+cosign/
+cosign.key
+cosign.pub
+
+# Test, Scan, & Coverage outputs
+coverage/
+report/
+zap-reports/
+.scannerwork/
+.trivyignore
+sonar-project.properties
+
+# Local execution scripts, Docker, & Kubernetes raw manifests
+Dockerfile
+.dockerignore
+docker-compose.yml
+nginx.conf
+k3d-cluster.sh
+github-action-runner.sh
+k8s/
+argocd/
+
+# Documentation & Media
+README.md
+ScreenShots/
+.vercel/

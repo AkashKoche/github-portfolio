@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: github-portfolio
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: staging
+            namespace: github-portfolio-staging
+          - env: production
+            namespace: github-portfolio-production
+  template:
+    metadata:
+      name: 'github-portfolio-{{env}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/AkashKoche/github-portfolio
+        targetRevision: main
+        path: helm/github-portfolio
+        helm:
+          valueFiles:
+            - values.yaml
+            - 'values-{{env}}.yaml'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+          - PrunePropagationPolicy=foreground

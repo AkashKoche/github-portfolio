@@ -1,0 +1,24 @@
+replicaCount: 3
+
+image:
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "200m"
+  limits:
+    memory: "256Mi"
+    cpu: "250m"
+
+config:
+  appName: "GitHub-Portfolio"
+  cacheDuration: "3600"
+

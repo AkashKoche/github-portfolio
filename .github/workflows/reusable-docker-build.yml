@@ -15,7 +15,8 @@ on:
       target_stage:
         required: false
         type: string
-        default: "builder"
+        default: ""
+        description: "Dockerfile build stage target"
       tags:
         required: false
         type: string
@@ -65,7 +66,7 @@ jobs:
         with:
           images: ${{ inputs.image_name }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main '}}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main'}}
             type=sha,prefix=,format=short
             type=semver,pattern={{version}}
 

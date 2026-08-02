@@ -9,9 +9,9 @@ on:
 jobs:
   update-gitops:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    uses: ./.github/workflows/reuseable-gitops-update.yml
+    uses: ./.github/workflows/reusable-gitops-update.yml
     with:
-      helm_values_path: "helm/github-portfolio/values.yaml"
-      image_tag: ${{ github.event.workflow_run.head_sha }}
+      helm_values_path: "helm/github-portfolio/values-staging.yaml"
+      image_tag: ${{ format('{0}', substr(github.event.workflow_run.head_sha, 0, 7)) }}
     secrets:
       git_token: ${{ secrets.GITHUB_TOKEN }}

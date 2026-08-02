@@ -1,0 +1,15 @@
+name: Production GitOps CD Pipeline
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  promote-to-production:
+    name: Promote Release to Production
+    uses: ./.github/workflows/reusable-gitops-update.yml
+    with:
+      helm_values_path: "helm/github-portfolio/values-production.yaml"
+      image_tag: ${{ github.event.release.tag_name }}
+    secrets:
+      git_token: ${{ secrets.GITHUB_TOKEN }}

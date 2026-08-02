@@ -25,9 +25,12 @@ jobs:
         with:
           token: ${{ secrets.git_token }}
 
+      - name: Install yq
+        uses: mikefarah/yq@v4.44.1
+
       - name: Update Helm Image Tag
         run: |
-          sed -i "s/tag: .*/tag: ${{ inputs.image_tag }}/" ${{ inputs.helm_values_path }}
+         yq eval '.image.tag = "${{ inputs.image_tag }}"' -i ${{ inputs.helm_values_path }}
 
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
